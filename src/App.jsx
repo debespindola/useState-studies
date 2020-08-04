@@ -19,59 +19,95 @@ const App = () => {
   };
 
   const getInformation = async () => {
-    const data = await axios.get(`https://api.github.com/users/${inputUserValue}`);
-    const { name, avatar_url: avatarUrl, bio } = data.data;
+    try {
+      const data = await axios.get(`https://api.github.com/users/${inputUserValue}`);
+      const { name, avatar_url: avatarUrl, bio } = data.data;
 
-    setImage(avatarUrl);
-    setBioText(bio);
-    setUserName(name);
+      getRepositories();
+      setImage(avatarUrl);
+      setBioText(bio);
+      setUserName(name);
+    } catch (error) {
+      setUserName('USER NOT FOUND');
+      setImage('');
+      setBioText('');
+      setRepositories([]);
+    }
+  };
+
+  const activeButton = {
+    cursor: 'pointer',
+    backgroundColor: 'pink',
+  };
+
+  const disabledButton = {
+    cursor: 'default',
+    backgroundColor: '#aaa',
   };
 
   return (
     <div className="website">
       <header className="header-container">
         <h1 className="primary-title">CHECK UP ON A GITHUB ACCOUNT</h1>
-        <form onSubmit={(event) => {
-          event.preventDefault();
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
 
-          getInformation();
-          getRepositories();
-        }}
+            getInformation();
+          }}
           className="form-container"
         >
-          <input className= "search-input" type="text" value={inputUserValue} onChange={(event) => setInputUserValue(event.target.value)} />
-          <input className= "search-button" type="submit" value="SEARCH" />
+          <input
+            className="search-input"
+            type="text"
+            value={inputUserValue}
+            onChange={(event) => setInputUserValue(event.target.value)}
+          />
+          <input className="search-button" type="submit" value="SEARCH" style={activeButton} />
         </form>
       </header>
 
       <section className="initial-informations-container">
-
         {userName && <h2 className="github-name">{userName}</h2>}
+
         {image && <img src={image} alt="profile pic" className="user-picture" />}
 
         {bioText && <p className="user-bio">{bioText}</p>}
-
       </section>
 
       <section className="repository-list-container">
-       {(userName || bioText || image) && <form onSubmit={(event) => {
-          event.preventDefault();
+        {image && (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (inputRepositoriesValue) {
+              setRepositories([
+                ...repositories,
+                {
+                  name: inputRepositoriesValue,
+                  id: Math.random() * 1000,
+                },
+              ]);
 
-          setRepositories([
-            ...repositories,
-            {
-              name: inputRepositoriesValue,
-              id: Math.random() * 1000,
-            },
-          ]);
-
-          setInputRepositoriesValue('');
-        }}
+              setInputRepositoriesValue('');
+            }
+          }}
           className="form-container"
         >
-          <input className= "search-input" type="text" value={inputRepositoriesValue} onChange={(event) => setInputRepositoriesValue(event.target.value)} />
-          <input className= "search-button" type="submit" value="ADD" />
-        </form>}
+          <input
+            className="search-input"
+            type="text"
+            value={inputRepositoriesValue}
+            onChange={(event) => setInputRepositoriesValue(event.target.value)}
+          />
+          <input
+            className="search-button"
+            type="submit"
+            value="ADD"
+            style={inputRepositoriesValue ? activeButton : disabledButton}
+          />
+        </form>
+        )}
 
         <ul>
           {repositories.map((each) => (
@@ -81,7 +117,7 @@ const App = () => {
       </section>
 
       <footer className="footer-obs">
-        {(userName || bioText || image) && <p className="obs">obs: isso não cria um repositório no github de verdade, é apenas simulação</p>}
+        {image && <p className="obs">obs: isso não cria um repositório no github de verdade, é apenas simulação</p>}
       </footer>
     </div>
   );
