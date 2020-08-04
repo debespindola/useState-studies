@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import './App.css';
 
 const App = () => {
-  const [inputUserValue, setInputUserValue] = useState('');
+  const [inputUserValue, setInputUserValue] = useState('debespindola');
   const [image, setImage] = useState('');
   const [userName, setUserName] = useState('');
   const [bioText, setBioText] = useState('');
@@ -44,6 +44,10 @@ const App = () => {
     cursor: 'default',
     backgroundColor: '#aaa',
   };
+
+  useEffect(() => {
+    getInformation();
+  }, []);
 
   return (
     <div className="website">
