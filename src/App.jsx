@@ -28,30 +28,33 @@ const App = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={(event) => {
-        event.preventDefault();
+    <div className="website">
+      <header className="header-container">
+        <h1 className="primary-title">CHECK UP ON A GITHUB ACCOUNT</h1>
+        <form onSubmit={(event) => {
+          event.preventDefault();
 
-        getInformation();
-        getRepositories();
-      }}
-      >
-        <input type="text" value={inputUserValue} onChange={(event) => setInputUserValue(event.target.value)} />
-        <input type="submit" value="buscar" />
-      </form>
+          getInformation();
+          getRepositories();
+        }}
+          className="form-container"
+        >
+          <input className= "search-input" type="text" value={inputUserValue} onChange={(event) => setInputUserValue(event.target.value)} />
+          <input className= "search-button" type="submit" value="SEARCH" />
+        </form>
+      </header>
 
       <section className="initial-informations-container">
 
         {userName && <h2 className="github-name">{userName}</h2>}
+        {image && <img src={image} alt="profile pic" className="user-picture" />}
 
         {bioText && <p className="user-bio">{bioText}</p>}
-
-        {image && <img src={image} alt="profile pic" className="user-picture" />}
 
       </section>
 
       <section className="repository-list-container">
-        <form onSubmit={(event) => {
+       {(userName || bioText || image) && <form onSubmit={(event) => {
           event.preventDefault();
 
           setRepositories([
@@ -64,19 +67,22 @@ const App = () => {
 
           setInputRepositoriesValue('');
         }}
+          className="form-container"
         >
-          <input type="text" value={inputRepositoriesValue} onChange={(event) => setInputRepositoriesValue(event.target.value)} />
-          <input type="submit" value="criar" />
-        </form>
+          <input className= "search-input" type="text" value={inputRepositoriesValue} onChange={(event) => setInputRepositoriesValue(event.target.value)} />
+          <input className= "search-button" type="submit" value="ADD" />
+        </form>}
 
         <ul>
           {repositories.map((each) => (
             <li key={each.id}>{each.name}</li>
           ))}
         </ul>
-
-        <p className="obs">obs: isso não cria um repositório no github de verdade, é apenas simulação</p>
       </section>
+
+      <footer className="footer-obs">
+        {(userName || bioText || image) && <p className="obs">obs: isso não cria um repositório no github de verdade, é apenas simulação</p>}
+      </footer>
     </div>
   );
 };
